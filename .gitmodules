@@ -1,0 +1,4 @@
+[submodule "xmarts/fieldservice_xma"]
+	path = xmarts/fieldservice_xma
+	url = git@github.com:xmarts/fieldservice_xma.git
+	branch = main
