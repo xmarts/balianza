@@ -2,3 +2,6 @@
 	path = xmarts/fieldservice_xma
 	url = git@github.com:xmarts/fieldservice_xma.git
 	branch = main
+[submodule "xmarts-app-integration"]
+	path = xmarts-app-integration
+	url = git@github.com:xmarts/xmarts-app-integration.git
