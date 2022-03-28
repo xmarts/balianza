@@ -33,4 +33,4 @@ from . import postal_code
 from . import postal_code_sat
 from . import colonies_sat
 from . import res_city_sat
-from . import latitude_length_by_cp
+#from . import latitude_length_by_cp
