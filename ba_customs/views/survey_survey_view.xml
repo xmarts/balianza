@@ -1,0 +1,161 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <record model="ir.ui.view" id="view_survey_survey_ba">
+        <field name="name">view.survey.survey.form.ba</field>
+        <field name="model">survey.survey</field>
+        <field name="inherit_id" ref="survey.survey_form"/>
+        <field name="arch" type="xml">
+            <field name="certification_report_layout" position="replace">
+                <field name="certification_report_layout" readonly="1" force_save="1"/>
+                
+            </field>
+            <field name="certification_badge_id_dummy" position="after">
+                <field name="date_init" invisible="1"/>
+                <field name="date_fin" invisible="1"/>
+                <field name="user_patron_id" required="1"/>
+                <field name="user_facilitador_id" required="1"/>
+                <field name="user_trabajadores_id" required="1"/>
+                <field name="company_id" required="1"/>
+                <label for="duration_course"/>
+                <div class="o_row">
+                    <field name="duration_course"  required="1"/><span>Horas</span>
+                </div>
+            </field>
+        </field>
+        </record>
+
+    	<template id="certification_report_view_classic_ba"  inherit_id="survey.certification_report_view_classic">
+
+
+    		<xpath expr="//div[@id='o_survey_certification']" position="replace">
+                	<div id="o_survey_certification_ba" t-att-data-oe-model="user_input._name" t-att-data-oe-id="user_input.id" t-att-class="'article certification-alianza classic %s' % layout_color">
+                    
+
+                    <div t-if="layout_color == 'red'">
+                        <div class="certification-gm">
+                        <div t-if="user_input.scoring_success">
+                            <div class="user-name-gm" t-esc="user_input.partner_id.name or user_input.email"/>
+                            <h2> </h2>
+                            <table width="100%" >
+                            <tr>
+                              <td style="color:#4E504C" width="100%">Por haber acreditado el curso <strong style="color:#9EC44E">"<span  t-field="user_input.survey_id.display_name"/>"</strong> en el periodo 
+comprendido del 
+<t t-foreach="user_input.survey_id.slide_channel_ids.channel_partner_ids" t-as="l">
+    <span t-if="l.partner_id.id == user_input.partner_id.id">
+        <span t-field="l.create_date" t-options='{"widget": "date"}'/>
+    </span>
+</t>
+ al <span t-field="user_input.create_date" t-options='{"widget": "date"}'/>. Con una duración de <span  t-field="user_input.survey_id.duration_course"/> horas.
+                              </td>
+                            </tr>
+                          </table>
+                        </div>
+                        <div t-else="">
+                            <div class="certification-fail-gm">
+                            Acreditación fallida
+                            </div>
+                            <br/>
+                            <H2>CURSO: <span t-field="user_input.survey_id.display_name"/></H2>
+
+                            <div class="certification-date-fail-gm" t-field="user_input.create_date" t-options='{"widget": "date"}'/>
+                            <img src="/survey/static/src/img/certification_seal.svg" alt="Certification Seal" role="img"/>
+                        </div>
+                    </div>
+                    <div class="certification-user1">
+                        <div t-if="user_input.scoring_success">
+                            <div style="color:#550D5F"> <span  t-field="user_input.survey_id.user_patron_id.name"/> </div>
+                            <div style="color:#4E504C"> <span  t-field="user_input.survey_id.user_patron_id.nombramiento_elearning"/> </div>
+                        </div>
+                    </div>
+
+                    <div class="certification-user2">
+                        <div t-if="user_input.scoring_success">
+                            <div style="color:#550D5F"> <span  t-field="user_input.survey_id.user_facilitador_id.name"/> </div>
+                            <div style="color:#4E504C"> <span  t-field="user_input.survey_id.user_facilitador_id.nombramiento_elearning"/> </div>
+                        </div>
+                    </div>
+  
+                    <div class="certification-user3">
+                        <div t-if="user_input.scoring_success">
+                            <div style="color:#550D5F"> <span  t-field="user_input.survey_id.user_trabajadores_id.name"/> </div>
+                            <div style="color:#4E504C"> <span  t-field="user_input.survey_id.user_trabajadores_id.nombramiento_elearning"/> </div>
+                        </div>
+                    </div>
+
+                    <div class="certification-company-name">
+                        <div t-if="user_input.scoring_success">
+                            <div style="color:#000000">Expedido por <span  t-field="user_input.survey_id.company_id.name"/> </div>
+                        </div>
+                    
+                    </div>
+    
+
+                    <div class="certification-company-rfc">
+                        <div t-if="user_input.scoring_success">
+                            <div style="color:#000000"> RFC: <span  t-field="user_input.survey_id.company_id.vat"/> </div>
+                        </div>
+                    </div>
+
+                    <div class="certification-firma1">
+                        <div t-if="user_input.scoring_success">
+                            <div><img width="12%" t-if="user_input.survey_id.user_patron_id.firma_digital" t-att-src="image_data_uri(user_input.survey_id.user_patron_id.firma_digital)" /></div>
+                        </div>
+                    </div>
+
+                    <div class="certification-firma2">
+                        <div t-if="user_input.scoring_success">
+                            <div><img width="45%" t-if="user_input.survey_id.user_facilitador_id.firma_digital" t-att-src="image_data_uri(user_input.survey_id.user_facilitador_id.firma_digital)" /></div>
+                        </div>
+                    </div>
+
+                    <div class="certification-firma3">
+                        <div t-if="user_input.scoring_success">
+                            <div><img width="45%" t-if="user_input.survey_id.user_trabajadores_id.firma_digital" t-att-src="image_data_uri(user_input.survey_id.user_trabajadores_id.firma_digital)" /></div>
+                        </div>
+                    </div>
+
+                    
+                    </div>
+
+
+
+
+
+                    <div t-else="layout_color != 'red'">
+                       <div class="certification">
+                        <div t-if="user_input.test_entry" class="test-entry"/>
+                        <h5 class="certification-name-label">CERTIFICADO</h5>
+                        <div class="certification-name" t-field="user_input.survey_id.display_name"/>
+                        <hr/>
+
+                        <div t-if="user_input.scoring_success">
+                            <h5>Este certificado se presenta a</h5>
+                            <div class="user-name" t-esc="user_input.partner_id.name or user_input.email"/>
+                            <hr class="small"/>
+
+                            <div class="certification-description">
+                                <span t-field="user_input.survey_id.create_uid.company_id.display_name"/> 
+se enorgullece de otorgar este certificado a
+                                <span t-esc="user_input.partner_id.name or user_input.email"/> por acreditar curso de: <span t-field="user_input.survey_id.display_name"/>.
+                            </div>
+                        </div>
+                        <div t-else="">
+                            <h5>Certificación fallida</h5>
+                        </div>
+
+                        <div class="certification-date" t-field="user_input.create_date" t-options='{"widget": "date"}'/>
+                        <img src="/survey/static/src/img/certification_seal.svg" alt="Certification Seal" role="img"/>
+
+                        <div class="certificate-signature">
+                            <span t-field="user_input.survey_id.create_uid.company_id.logo" t-options="{'widget': 'image'}" role="img"/>
+                        </div>
+                        </div>
+                    </div>
+
+                </div>
+            </xpath>
+        </template>
+
+      </data>
+</odoo>

@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+<odoo>
+    <data>
+        <template id ="403_ba" inherit_id="http_routing.403">
+            <xpath expr="//div[@id='wrap']" position="replace">
+                <div id="wrap_ba">
+                    <div class="container">
+                        <h1 class="mt-5">403: Acceso restringido</h1>
+                        <p>Debe iniciar sesión para poder visualizar el contenido o los cursos exclusivos.</p>
+                        <div><img width="80%" src="/ba_customs/static/src/img/ayuda2.png" />    <img width="80%" src="/ba_customs/static/src/img/ayuda3.png" /></div>
+                        <div>
+                            <br/>
+                        </div>
+                        <div><img width="100%" src="/ba_customs/static/src/img/ayuda1.png" /></div>
+                    </div>
+                        
+                </div>
+            </xpath>
+        </template>
+      </data>
+</odoo>

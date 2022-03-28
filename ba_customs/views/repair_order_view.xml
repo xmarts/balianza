@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <record id="view_repair_order_tree_ba" model="ir.ui.view">
+        <field name="name">repair.tree</field>
+        <field name="model">repair.order</field>
+        <field name="arch" type="xml">
+            <tree string="Repairs order" multi_edit="1" sample="1">
+                <field name="name"/>
+                <field name="vehicle_id" />
+                <field name="product_id" invisible="1" />
+                <field name="product_qty" invisible="1" />
+                <field name="product_uom" invisible="1" />
+                <field name="user_id" optional="hide" widget='many2one_avatar_user'/>
+                <field name="partner_id" readonly="1" optional="show"/>
+                <field name="address_id" optional="show"/>
+                <field name="guarantee_limit" optional="show"/>
+                <field name="location_id" optional="hide"/>
+                <field name="company_id" groups="base.group_multi_company" readonly="1" optional="show"/>
+                <field name="state" optional="show" widget='badge' decoration-success="state == 'done'" decoration-info="state not in ('done', 'cancel')"/>
+                <field name="activity_exception_decoration" widget="activity_exception"/>
+            </tree>
+        </field>
+    </record>
+
+    <record id="view_repair_order_form_ba" model="ir.ui.view">
+        <field name="name">repair.form</field>
+        <field name="model">repair.order</field>
+        <field name="arch" type="xml">
+            <form string="Repair Order">
+               <header>
+                   <button name="action_validate" states="draft" type="object" string="Confirmar Reparación/Consumo" class="oe_highlight"/>
+                   <button name="action_repair_start" attrs="{'invisible': ['&amp;', ('state','!=','confirmed'), '!', '&amp;', ('state','=','ready'), ('invoice_method','=','b4repair')]}"
+                    type="object" string="Comenzar Reparación/Consumo" class="oe_highlight"/>
+                   <button name="action_repair_end" states="under_repair" type="object" string="Finalizar Reparación/Consumo" class="oe_highlight"/>
+                   <button name="action_repair_invoice_create" type="object" string="Crear factura" class="oe_highlight" groups="account.group_account_invoice" attrs="{'invisible': ['|', ('state', '!=', '2binvoiced'), ('invoice_id', '!=', False)]}"/>
+                   <button name="action_send_mail" states="draft" string="Enviar cotización" type="object"/>
+                   <button name="print_repair_order" states="draft" string="Imprimir cotización" type="object"/>
+                   <button name="action_repair_cancel_draft" states="cancel" string="Convertir a borrador" type="object"/>
+                   <button name="action_repair_cancel" string="Cancelar Reparación/Consumo" type="object" confirm="Draft invoices for this order will be cancelled. Do you confirm the action?" attrs="{'invisible':['|', ('state', '=', 'cancel'), ('invoice_state', '!=', 'draft')]}"/>
+                   <button name="action_repair_cancel" string="Cancelar Reparación/Consumo" type="object" attrs="{'invisible': ['|', ('state','=', 'cancel',), ('invoice_state', '=', 'draft')]}"/>
+                   <field name="state" widget="statusbar" statusbar_visible="draft,confirmed,done"/>
+               </header>
+               <sheet string="Repairs order">
+                    <div class="oe_button_box" name="button_box">
+                        <field name="invoice_id" invisible="1"/>
+                        <button name="action_created_invoice"
+                            type="object"
+                            class="oe_stat_button"
+                            icon="fa-pencil-square-o"
+                            attrs="{'invisible': [('invoice_id', '=', False)]}"
+                            groups="account.group_account_invoice">
+                            <div class="o_field_widget o_stat_info">
+                                <span class="o_stat_text">1</span>
+                                <span class="o_stat_text">Invoices</span>
+                            </div>
+                        </button>
+                    </div>
+                    <label for="name"/>
+                    <h1>
+                        <field name="name"/>
+                    </h1>
+                    <group>
+                        <group>
+                            <field name="invoice_state" invisible="1"/>
+                            <field name="tracking" invisible="1" attrs="{'readonly': 1}"/>
+                            <field name="vehicle_id" />
+                            <field name="product_id" invisible="1" required="0" />
+                            <field name="product_uom_category_id" invisible="1" required="0" />
+                            <label for="product_qty" invisible="1" required="0"/>
+                            <div class="o_row">
+                                <field name="product_qty" invisible="1" required="0" />
+                                <field name="product_uom" invisible="1" required="0" />
+                            </div>
+                            <field name="lot_id" invisible="1" required="0" />
+                            <field name="partner_id" widget="res_partner_many2one" attrs="{'required':[('invoice_method','!=','none')]}" context="{'res_partner_search_mode': 'customer', 'show_vat': True}"/>
+                            <field name="address_id" groups="sale.group_delivery_invoice_address"/>
+                            <field name="user_id" domain="[('share', '=', False)]"/>
+                        </group>
+                        <group>
+                            <field name="location_id" options="{'no_create': True}"/>
+                            <field name="company_id" groups="base.group_multi_company" options="{'no_create': True}"/>
+                            <field name="guarantee_limit"/>
+                            <field name="invoice_method"/>
+                            <field name="partner_invoice_id" attrs="{'invisible':[('invoice_method','=', 'none')],'required':[('invoice_method','!=','none')]}" groups="sale.group_delivery_invoice_address"/>
+                            <field name="pricelist_id" groups="product.group_product_pricelist" context="{'product_id':product_id}" attrs="{'invisible':[('invoice_method','=', 'none')]}"/>
+                            <field name="tag_ids" widget="many2many_tags" options="{'color_field': 'color', 'no_create_edit': True}"/>
+                            <field name="currency_id" invisible="1"/>
+                        </group>
+                    </group>
+                <notebook>
+                    <page string="Piezas Consumir" name="parts_ba">
+                        <field name="operations" context="{'default_product_uom_qty': product_qty, 'default_company_id': company_id}">
+                            <form string="Operations">
+                                <group>
+                                    <group>
+                                        <field name="company_id" invisible="1" force_save="1"/>
+                                        <field name="type"/>
+                                        <field name="product_id"/>
+                                        <field name="name"/>
+                                        <field name="product_uom_category_id" invisible="1"/>
+                                        <label for="product_uom_qty"/>
+                                        <div class="o_row">
+                                            <field name="product_uom_qty" string="Cantidad"/>
+                                            <field name="product_uom" string="Unidad" groups="uom.group_uom"/>
+                                        </div>
+                                        <field name="price_unit"/>
+                                        <field name="tax_id" widget="many2many_tags"/>
+                                        <field name="invoiced" invisible="1"/>
+                                        <field name="price_subtotal" widget="monetary" invisible="1"/>
+                                        <field name="currency_id" invisible="1"/>
+                                    </group>
+                                    <group>
+                                        <field name="lot_id" context="{'default_product_id': product_id, 'default_company_id': company_id}" groups="stock.group_production_lot"/>
+                                        <field name="location_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations"/>
+                                        <field name="location_dest_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations"/>
+                                    </group>
+                                </group>
+                                <group name="History" string="History" attrs="{'invisible':[('move_id','=', False)]}">
+                                    <field name="move_id"/>
+                                    <field name="invoice_line_id" invisible="1"/>
+                                </group>
+                            </form>
+                            <tree string="Operations" editable="bottom">
+                                <field name="company_id" invisible="1" force_save="1"/>
+                                <field name="type"/>
+                                <field name="product_id" domain="[('vehicle_complement', '=', True)]" />
+                                <field name='name' optional="show"/>
+                                <field name="product_uom_category_id" invisible="1"/>
+                                <field name="lot_id" context="{'default_product_id': product_id, 'default_company_id': company_id}" groups="stock.group_production_lot"/>
+                                <field name="location_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations" optional="show"/>
+                                <field name="location_dest_id" options="{'no_create': True}" groups="stock.group_stock_multi_locations" optional="show"/>
+                                <field name="product_uom_qty" string="Cantidad"/>
+                                <field name="product_uom" string="Unidad" groups="uom.group_uom" optional="show"/>
+                                <field name="price_unit"/>
+                                <field name="tax_id" widget="many2many_tags" optional="show"/>
+                                <field name="price_subtotal" widget="monetary"/>
+                                <field name="currency_id" invisible="1"/>
+                            </tree>
+                        </field>
+                        <group class="oe_subtotal_footer oe_right">
+                            <field name="amount_untaxed" sum="Untaxed amount"/>
+                            <field name="amount_tax"/>
+                            <div class="oe_subtotal_footer_separator oe_inline">
+                                <label for="amount_total" />
+                                <button name="button_dummy"
+                                    states="draft" string="(update)" type="object" class="oe_edit_only oe_link"/>
+                            </div>
+                            <field name="amount_total" nolabel="1" sum="Total amount" class="oe_subtotal_footer_separator"/>
+                        </group>
+                        <div class="oe_clear"/>
+                    </page>
+                    <page string="Operaciones" name="operations_ba">
+                        <field name="fees_lines" context="{'default_company_id': company_id}">
+                            <form string="Fees">
+                                <group>
+                                    <field name="company_id" invisible="1" force_save="1"/>
+                                    <field name="product_id" required="True"/>
+                                    <field name="name"/>
+                                    <field name="product_uom_category_id" invisible="1"/>
+                                    <label for="product_uom_qty"/>
+                                    <div class="o_row">
+                                        <field name="product_uom_qty" string="Cantidad"/>
+                                        <field name="product_uom" groups="uom.group_uom" string="Unidad" />
+                                    </div>
+                                    <field name="price_unit"/>
+                                    <field widget="many2many_tags" name="tax_id"/>
+                                    <field name="price_subtotal" widget="monetary" invisible="1"/>
+                                    <field name="currency_id" invisible="1"/>
+                                </group>
+                            </form>
+                            <tree string="Fees" editable="bottom">
+                                <field name="company_id" invisible="1" force_save="1"/>
+                                <field name="product_id" required="True"/>
+                                <field name='name' optional="show"/>
+                                <field name="product_uom_qty" string="Cantidad"/>
+                                <field name="product_uom_category_id" invisible="1"/>
+                                <field name="product_uom" string="Unidad" groups="uom.group_uom" optional="show"/>
+                                <field name="price_unit"/>
+                                <field name="tax_id" widget="many2many_tags" optional="show"/>
+                                <field name="price_subtotal" widget="monetary"/>
+                                <field name="currency_id" invisible="1"/>
+                            </tree>
+                        </field>
+                    </page>
+                    <page string="Información Extra" name="extra_info" groups="base.group_no_one">
+                        <group>
+                            <group>
+                                <field name="move_id"/>
+                            </group>
+                            <group>
+                                <field name="repaired"/>
+                                <field name="invoiced"/>
+                            </group>
+                        </group>
+                    </page>
+                    <page string="Notas" name="notes">
+                        <field name="internal_notes" placeholder="Agregar notas internas."/>
+                        <field name="quotation_notes" placeholder="Agregar notas de cotización."/>
+                    </page>
+                </notebook>
+                </sheet>
+                <div class="oe_chatter">
+                    <field name="message_follower_ids"/>
+                    <field name="activity_ids"/>
+                    <field name="message_ids"/>
+                </div>
+            </form>
+        </field>
+    </record>
+
+    <record id="fleet_vehicle_log_repair_action" model="ir.actions.act_window">
+        <field name="name">Reparaciones/Consumos</field>
+        <field name="type">ir.actions.act_window</field>
+        <field name="res_model">repair.order</field>
+        <field name="view_mode">tree,kanban,graph,pivot,form</field>
+        <field name="context">{'vehicle_id': True}</field>
+        <field name="domain">[('vehicle_id', '!=', False)]</field>
+        <field name="help" type="html">
+          <p class="o_view_nocontent_smiling_face">
+            Crea una nueva orden de reparación o consumo
+          </p><p>
+            se relacionará toda la actividad la actividad directamente a flota.
+          </p>
+        </field>
+    </record>
+
+    <record id="action_vehicle_log_repair_tree_view1" model="ir.actions.act_window.view">
+        <field name="sequence" eval="0"/>
+        <field name="view_mode">tree</field>
+        <field name="view_id" ref="view_repair_order_tree_ba"/>
+        <field name="act_window_id" ref="fleet_vehicle_log_repair_action"/>
+    </record>
+
+    <record id="action_vehicle_log_repair_form_view1" model="ir.actions.act_window.view">
+        <field name="sequence" eval="1"/>
+        <field name="view_mode">form</field>
+        <field name="view_id" ref="view_repair_order_form_ba"/>
+        <field name="act_window_id" ref="fleet_vehicle_log_repair_action"/>
+    </record>
+        
+
+</odoo>

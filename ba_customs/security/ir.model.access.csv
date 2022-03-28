@@ -1,0 +1,3 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_assignment_parts_manager,assignment_parts_manager,model_assignment_parts,fleet.fleet_group_user,1,1,1,1
+access_helpdesk_tag_ba_manager,helpdesk_tag_ba_manager,model_helpdesk_tag_ba,helpdesk.group_helpdesk_manager,1,1,1,1
