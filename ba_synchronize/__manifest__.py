@@ -85,7 +85,7 @@
         'views/displacement_level_view.xml',
         'views/sale_delivery_available_ba_view.xml',
         'views/sale_delivery_ba_view.xml',
-        'views/latitude_length_by_cp_view.xml',
+        #'views/latitude_length_by_cp_view.xml',
 
         'wizard/views/create_landed_cost_view.xml',
         'wizard/views/create_or_update_pricelist_view.xml',
