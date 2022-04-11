@@ -2,3 +2,8 @@
 	path = TLuigi1/balianza
 	url = git@github.com:TLuigi1/balianza.git
 	branch = main
+
+[submodule "xmarts/xma-detail-pdv-alianza"]
+	path = xmarts/xma-detail-pdv-alianza
+	url = git@github.com:xmarts/xma-detail-pdv-alianza.git
+	branch = 14.0
