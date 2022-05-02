@@ -7,3 +7,6 @@
 	path = xmarts/xma-detail-pdv-alianza
 	url = git@github.com:xmarts/xma-detail-pdv-alianza.git
 	branch = 14.0
+[submodule "point-of-sale-settings"]
+	path = point-of-sale-settings
+	url = git@github.com:xmarts/point-of-sale-settings.git
