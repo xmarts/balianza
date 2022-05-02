@@ -10,3 +10,8 @@
 [submodule "point-of-sale-settings"]
 	path = point-of-sale-settings
 	url = git@github.com:xmarts/point-of-sale-settings.git
+
+[submodule "xmarts/point-of-sale-settings"]
+	path = xmarts/point-of-sale-settings
+	url = git@github.com:xmarts/point-of-sale-settings.git
+	branch = 14.0
