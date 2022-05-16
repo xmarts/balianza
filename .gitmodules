@@ -15,3 +15,8 @@
 	path = xmarts/point-of-sale-settings
 	url = git@github.com:xmarts/point-of-sale-settings.git
 	branch = 14.0
+
+[submodule "xmarts/xma-delivery-alianza"]
+	path = xmarts/xma-delivery-alianza
+	url = git@github.com:xmarts/xma-delivery-alianza.git
+	branch = 14.0
